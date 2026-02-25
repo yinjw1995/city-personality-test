@@ -3,901 +3,305 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>城市性格匹配测试 - 发现最适合你的城市</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>城市性格图鉴 - 测测你的精神原乡</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --bg: #fdfbfb;
+            --text-main: #2d3436;
+            --text-sub: #636e72;
         }
-        
+
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            color: #333;
-            line-height: 1.6;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        header {
-            text-align: center;
-            padding: 30px 20px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            margin-bottom: 30px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        header::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(to right, #3498db, #2ecc71, #e74c3c, #f39c12);
-        }
-        
-        h1 {
-            color: #2c3e50;
-            font-size: 2.8rem;
-            margin-bottom: 10px;
-            background: linear-gradient(45deg, #3498db, #2ecc71);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        
-        .subtitle {
-            color: #7f8c8d;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-        }
-        
-        .progress-container {
-            display: none;
-            margin: 20px auto;
-            max-width: 800px;
-            background-color: #ecf0f1;
-            border-radius: 10px;
-            overflow: hidden;
-            height: 20px;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(to right, #3498db, #2ecc71);
-            width: 0%;
-            transition: width 0.5s ease;
-        }
-        
-        .progress-text {
-            text-align: center;
-            margin: 10px 0;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        
-        #test-container {
+            font-family: 'PingFang SC', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+            margin: 0;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            padding: 30px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            margin-bottom: 30px;
+            min-height: 100vh;
+            color: var(--text-main);
         }
-        
-        .question-card {
-            display: none;
-            width: 100%;
-            max-width: 800px;
-            animation: fadeIn 0.5s ease;
+
+        #app {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            width: 85%;
+            max-width: 480px;
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: all 0.4s ease;
         }
-        
-        .question-card.active {
-            display: block;
-        }
-        
+
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
-        .question-title {
-            font-size: 1.8rem;
-            color: #2c3e50;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f1f1f1;
-        }
-        
-        .question-number {
-            display: inline-block;
-            background: #3498db;
-            color: white;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 36px;
-            margin-right: 15px;
-            font-weight: bold;
-        }
-        
-        .options-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .option {
-            padding: 20px;
-            border: 2px solid #ecf0f1;
-            border-radius: 10px;
+
+        h1 { font-size: 1.6rem; margin-bottom: 10px; }
+        .subtitle { color: var(--text-sub); font-size: 0.95rem; margin-bottom: 30px; line-height: 1.5; }
+
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 16px 20px;
+            margin: 12px 0;
+            border: 2px solid #f1f2f6;
+            border-radius: 16px;
+            background: #fff;
             cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            background-color: #f9f9f9;
-        }
-        
-        .option:hover {
-            border-color: #3498db;
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.2);
-            background-color: #f0f8ff;
-        }
-        
-        .option.selected {
-            border-color: #2ecc71;
-            background-color: #e8f8f1;
-            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.2);
-        }
-        
-        .option-icon {
-            font-size: 1.5rem;
-            margin-right: 10px;
-            color: #3498db;
-        }
-        
-        .option-text {
-            font-size: 1.1rem;
-            font-weight: 500;
-        }
-        
-        .navigation {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 2px solid #f1f1f1;
-        }
-        
-        .btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .btn-prev {
-            background-color: #ecf0f1;
-            color: #7f8c8d;
-        }
-        
-        .btn-prev:hover {
-            background-color: #bdc3c7;
-            color: white;
-        }
-        
-        .btn-next {
-            background: linear-gradient(to right, #3498db, #2ecc71);
-            color: white;
-        }
-        
-        .btn-next:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 7px 15px rgba(52, 152, 219, 0.4);
-        }
-        
-        .btn-restart {
-            background: linear-gradient(to right, #e74c3c, #f39c12);
-            color: white;
-        }
-        
-        .btn-restart:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 7px 15px rgba(231, 76, 60, 0.4);
-        }
-        
-        .btn-submit {
-            background: linear-gradient(to right, #9b59b6, #e74c3c);
-            color: white;
-        }
-        
-        .btn-submit:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 7px 15px rgba(155, 89, 182, 0.4);
-        }
-        
-        #result-container {
-            display: none;
-            padding: 40px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
-        .result-header {
-            margin-bottom: 30px;
-        }
-        
-        .result-title {
-            font-size: 2.5rem;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-        
-        .matched-city {
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: #e74c3c;
-            margin: 20px 0;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .match-score {
-            font-size: 1.2rem;
-            color: #7f8c8d;
-            margin-bottom: 30px;
-        }
-        
-        .city-card {
-            display: flex;
-            align-items: center;
-            padding: 25px;
-            background: #f9f9f9;
-            border-radius: 15px;
-            margin-bottom: 30px;
+            transition: all 0.2s;
+            font-size: 1rem;
             text-align: left;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            color: var(--text-main);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
         }
-        
-        .city-image {
-            width: 200px;
-            height: 150px;
-            border-radius: 10px;
-            object-fit: cover;
-            margin-right: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+
+        .option-btn:hover {
+            border-color: var(--secondary);
+            background-color: #f8faff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(108, 92, 231, 0.1);
         }
-        
-        .city-details h3 {
-            color: #2c3e50;
-            font-size: 1.8rem;
-            margin-bottom: 10px;
+
+        #progress-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            font-size: 0.85rem;
+            color: var(--text-sub);
         }
-        
-        .city-tags {
-            margin: 15px 0;
+
+        #progress-bar {
+            flex-grow: 1;
+            height: 8px;
+            background: #f1f2f6;
+            border-radius: 4px;
+            margin: 0 15px;
+            overflow: hidden;
         }
-        
-        .tag {
-            display: inline-block;
-            padding: 5px 15px;
-            background-color: #e8f4fc;
-            color: #3498db;
-            border-radius: 50px;
-            margin-right: 10px;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
+
+        #progress-inner {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            width: 0%;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        /* 结果页专属样式 */
+        .result-tag { display: inline-block; padding: 5px 15px; background: #eef2ff; color: var(--primary); border-radius: 20px; font-size: 0.85rem; margin-bottom: 15px; font-weight: bold; }
+        .city-name { font-size: 3rem; font-weight: 900; margin: 10px 0; background: linear-gradient(120deg, var(--primary), #e84393); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .city-desc { line-height: 1.8; color: var(--text-sub); text-align: justify; background: #f8f9fa; padding: 20px; border-radius: 16px; font-size: 0.95rem; margin-bottom: 20px; }
         
-        .city-description {
-            color: #555;
-            line-height: 1.7;
-        }
-        
-        .other-cities {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-        
-        .other-city {
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-        
-        .other-city:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-        
-        .other-city h4 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 1.3rem;
-        }
-        
-        .other-city-score {
-            color: #e74c3c;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #7f8c8d;
-            font-size: 0.9rem;
-        }
-        
-        .start-container {
-            text-align: center;
-            padding: 50px 20px;
-        }
-        
-        .start-title {
-            font-size: 2.5rem;
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
-        
-        .start-description {
-            font-size: 1.2rem;
-            color: #555;
-            max-width: 800px;
-            margin: 0 auto 40px;
-            line-height: 1.7;
-        }
-        
-        .btn-start {
-            background: linear-gradient(to right, #3498db, #2ecc71);
+        .action-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            padding: 18px 50px;
-            font-size: 1.3rem;
-            margin: 0 auto;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3);
+            transition: transform 0.2s;
         }
-        
-        @media (max-width: 768px) {
-            .options-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .city-card {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .city-image {
-                margin-right: 0;
-                margin-bottom: 20px;
-                width: 100%;
-                max-width: 300px;
-            }
-            
-            h1 {
-                font-size: 2.2rem;
-            }
-            
-            .question-title {
-                font-size: 1.5rem;
-            }
-        }
+        .action-btn:hover { transform: scale(1.05); }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1><i class="fas fa-city"></i> 城市性格匹配测试</h1>
-            <p class="subtitle">通过10道题发现最适合你性格的中国城市</p>
-        </header>
-        
-        <div id="test-container">
-            <div class="start-container">
-                <h2 class="start-title">发现你的理想城市</h2>
-                <p class="start-description">
-                    你是否曾思考过，哪个中国城市最适合你的性格？是充满活力的上海，还是历史悠久的西安？
-                    是悠闲自在的成都，还是创新前沿的深圳？完成这个测试，我们将根据你的性格特点、
-                    生活方式偏好和价值观，为你匹配最适合的中国城市。
-                </p>
-                <button class="btn btn-start" id="start-btn">开始测试</button>
-            </div>
-            
-            <div class="progress-container" id="progress-container">
-                <div class="progress-bar" id="progress-bar"></div>
-            </div>
-            <div class="progress-text" id="progress-text">第1题 / 共10题</div>
-            
-            <!-- 问题将通过JavaScript动态生成 -->
-        </div>
-        
-        <div id="result-container">
-            <!-- 结果将通过JavaScript动态生成 -->
-        </div>
-        
-        <footer>
-            <p>© 2026 城市性格匹配测试 | 本测试仅供娱乐参考 | 数据来源：公开资料与城市性格研究</p>
-            <p>2026 丙午马年 新春快乐！</p>
-        </footer>
+
+<div id="app" class="fade-in">
+    <div id="start-screen">
+        <h1>🧭 测测你的“精神原乡”</h1>
+        <p class="subtitle">人的出生地是随机的<br>但灵魂的归属地是有迹可循的。<br>6道题，撕下伪装，找寻最懂你的城市。</p>
+        <button class="action-btn" onclick="startTest()">开始匹配</button>
     </div>
 
-    <script>
-        // 城市数据
-        const cities = [
-            {
-                id: 'beijing',
-                name: '北京',
-                description: '作为中国的首都，北京融合了古老与现代。这里既有故宫、天坛等历史遗迹，也有798艺术区、CBD等现代地标。北京适合有雄心、追求事业成功，同时又对历史文化有深厚兴趣的人。',
-                tags: ['历史文化', '政治中心', '教育资源丰富', '四季分明'],
-                imageColor: '#d63031'
-            },
-            {
-                id: 'shanghai',
-                name: '上海',
-                description: '国际化大都市，金融、时尚与艺术中心。上海充满活力与机遇，生活节奏快，适合追求时尚、热爱国际化生活、事业心强的人。外滩的夜景和法租界的小资情调是这座城市的标志。',
-                tags: ['国际化', '时尚前沿', '经济中心', '快节奏'],
-                imageColor: '#0984e3'
-            },
-            {
-                id: 'shenzhen',
-                name: '深圳',
-                description: '中国最年轻的一线城市，创新与科技的天堂。深圳充满创业精神，适合敢于冒险、追求创新、热爱科技的年轻人。这里绿化极好，公园众多，是一座现代化花园城市。',
-                tags: ['科技创新', '年轻活力', '创业天堂', '现代化'],
-                imageColor: '#00b894'
-            },
-            {
-                id: 'chengdu',
-                name: '成都',
-                description: '天府之国，以悠闲的生活节奏和美食文化闻名。成都人懂得享受生活，适合追求生活品质、热爱美食、喜欢慢节奏生活的人。这里既有深厚的历史底蕴，又有现代的休闲娱乐。',
-                tags: ['美食之都', '休闲生活', '熊猫故乡', '慢节奏'],
-                imageColor: '#e17055'
-            },
-            {
-                id: 'hangzhou',
-                name: '杭州',
-                description: '"上有天堂，下有苏杭"，杭州以西湖美景和数字经济发展著称。这座城市既有古典韵味，又有现代活力，适合追求生活与工作平衡、热爱自然与科技结合的人。',
-                tags: ['数字科技', '风景优美', '创业氛围', '宜居城市'],
-                imageColor: '#6c5ce7'
-            },
-            {
-                id: 'xian',
-                name: '西安',
-                description: '十三朝古都，历史文化底蕴深厚。西安适合对历史、传统文化有浓厚兴趣的人。这里的生活节奏相对较慢，物价适中，有着独特的西北风情和美食文化。',
-                tags: ['历史古都', '文化底蕴', '美食多样', '节奏适中'],
-                imageColor: '#fdcb6e'
-            },
-            {
-                id: 'xiamen',
-                name: '厦门',
-                description: '海上花园城市，气候宜人，环境优美。厦门适合喜欢海滨生活、追求文艺小清新风格的人。这里的生活节奏悠闲，适合创作和放松，是一座非常适合居住的城市。',
-                tags: ['海滨城市', '文艺清新', '气候宜人', '宜居'],
-                imageColor: '#00cec9'
-            },
-            {
-                id: 'qingdao',
-                name: '青岛',
-                description: '红瓦绿树，碧海蓝天，青岛以啤酒、海洋和德式建筑闻名。这里既有海洋的浪漫，又有工业的扎实，适合喜欢海洋文化、享受啤酒与海鲜的人。',
-                tags: ['海洋文化', '啤酒之都', '欧式建筑', '气候舒适'],
-                imageColor: '#74b9ff'
-            },
-            {
-                id: 'suzhou',
-                name: '苏州',
-                description: '东方水城，园林之城。苏州完美融合了古典园林与现代工业，适合喜欢精致生活、传统文化，同时又注重经济发展的人。这里离上海近，享受双城优势。',
-                tags: ['园林之城', '水乡风情', '经济发达', '精致生活'],
-                imageColor: '#55efc4'
-            },
-            {
-                id: 'chongqing',
-                name: '重庆',
-                description: '山城、雾都、火锅之都。重庆以独特的立体城市景观和麻辣美食闻名。这里的人性格直爽，生活气息浓厚，适合喜欢独特地形、热爱美食、性格豪爽的人。',
-                tags: ['山城特色', '火锅之都', '立体交通', '热情直爽'],
-                imageColor: '#e84393'
-            },
-            {
-                id: 'kunming',
-                name: '昆明',
-                description: '春城，四季如春，气候宜人。昆明适合喜欢温和气候、慢节奏生活、热爱自然与花卉的人。这里的生活成本相对较低，是养老和休闲的好地方。',
-                tags: ['四季如春', '花卉之都', '慢节奏', '旅游城市'],
-                imageColor: '#fd79a8'
-            },
-            {
-                id: 'guangzhou',
-                name: '广州',
-                description: '千年商都，美食天堂。广州以务实、包容的城市性格和丰富的早茶文化闻名。这里适合注重实际、热爱美食、喜欢岭南文化的人。',
-                tags: ['美食之都', '商业中心', '务实包容', '岭南文化'],
-                imageColor: '#f9ca24'
-            }
-        ];
+    <div id="quiz-screen" class="hidden">
+        <div id="progress-container">
+            <span id="step-current">1</span>
+            <div id="progress-bar"><div id="progress-inner"></div></div>
+            <span id="step-total">6</span>
+        </div>
+        <h3 id="question-text" style="text-align: left; margin-bottom: 20px; line-height: 1.4;">问题</h3>
+        <div id="options-container"></div>
+    </div>
 
-        // 测试题目
-        const questions = [
-            {
-                id: 1,
-                text: "你理想中的周末是如何度过的？",
-                options: [
-                    { text: "探索博物馆、历史遗迹或艺术展览", cities: { beijing: 8, xian: 10, suzhou: 7 } },
-                    { text: "在咖啡馆阅读、写作或与朋友深度交流", cities: { shanghai: 9, xiamen: 8, chengdu: 7 } },
-                    { text: "爬山、徒步或进行户外运动", cities: { kunming: 9, qingdao: 7, hangzhou: 8 } },
-                    { text: "尝试新餐厅、学习烹饪或逛美食市场", cities: { chongqing: 10, chengdu: 9, guangzhou: 10 } },
-                    { text: "参加科技讲座、创业沙龙或学习新技能", cities: { shenzhen: 10, hangzhou: 9, beijing: 7 } }
-                ]
-            },
-            {
-                id: 2,
-                text: "你更喜欢哪种气候？",
-                options: [
-                    { text: "四季分明，感受春夏秋冬的变化", cities: { beijing: 9, xian: 8, shenyang: 10 } },
-                    { text: "温暖湿润，冬天不太冷", cities: { shanghai: 8, hangzhou: 9, suzhou: 8 } },
-                    { text: "四季如春，全年气候温和", cities: { kunming: 10, xiamen: 9, chengdu: 8 } },
-                    { text: "海洋性气候，夏天凉爽", cities: { qingdao: 10, dalian: 9, xiamen: 8 } },
-                    { text: "不太在意气候，适应能力强", cities: { shenzhen: 8, chongqing: 7, guangzhou: 7 } }
-                ]
-            },
-            {
-                id: 3,
-                text: "你希望生活的城市节奏是？",
-                options: [
-                    { text: "快节奏，充满竞争与机会", cities: { shanghai: 10, shenzhen: 10, beijing: 9 } },
-                    { text: "适中节奏，工作与生活平衡", cities: { hangzhou: 9, suzhou: 8, guangzhou: 7 } },
-                    { text: "慢节奏，享受生活本身", cities: { chengdu: 10, kunming: 9, xiamen: 9 } },
-                    { text: "有快有慢，取决于区域和季节", cities: { chongqing: 8, qingdao: 7, xian: 6 } }
-                ]
-            },
-            {
-                id: 4,
-                text: "你更看重城市的哪方面？",
-                options: [
-                    { text: "就业机会和事业发展空间", cities: { shenzhen: 10, beijing: 9, shanghai: 10 } },
-                    { text: "生活成本与宜居性", cities: { chengdu: 9, kunming: 10, xiamen: 9 } },
-                    { text: "文化底蕴和历史氛围", cities: { xian: 10, beijing: 9, suzhou: 8 } },
-                    { text: "自然环境和绿化程度", cities: { hangzhou: 10, xiamen: 9, kunming: 10 } },
-                    { text: "美食多样性和饮食文化", cities: { chongqing: 10, chengdu: 10, guangzhou: 10 } }
-                ]
-            },
-            {
-                id: 5,
-                text: "你更喜欢哪种城市景观？",
-                options: [
-                    { text: "现代摩天大楼与历史建筑交融", cities: { shanghai: 10, beijing: 9, guangzhou: 8 } },
-                    { text: "古典园林与小桥流水", cities: { suzhou: 10, hangzhou: 9, yangzhou: 8 } },
-                    { text: "海滨风光与沙滩", cities: { xiamen: 10, qingdao: 10, sanya: 9 } },
-                    { text: "山川湖泊与自然公园", cities: { kunming: 9, chengdu: 8, hangzhou: 9 } },
-                    { text: "独特地形与立体城市景观", cities: { chongqing: 10, hongkong: 9 } }
-                ]
-            },
-            {
-                id: 6,
-                text: "你希望居住的城市规模是？",
-                options: [
-                    { text: "超大城市，国际化大都市", cities: { shanghai: 10, beijing: 10, shenzhen: 9 } },
-                    { text: "大城市，资源丰富但不过于拥挤", cities: { hangzhou: 9, chengdu: 9, chongqing: 8 } },
-                    { text: "中等城市，生活舒适便利", cities: { xiamen: 9, suzhou: 8, qingdao: 8 } },
-                    { text: "小城市，宁静安逸", cities: { kunming: 7, yangzhou: 9, lijiang: 10 } }
-                ]
-            },
-            {
-                id: 7,
-                text: "你的社交风格更接近？",
-                options: [
-                    { text: "广泛社交，认识各行各业的人", cities: { shanghai: 10, beijing: 9, shenzhen: 9 } },
-                    { text: "有几个亲密朋友，深度交往", cities: { chengdu: 9, xiamen: 8, kunming: 8 } },
-                    { text: "随遇而安，既有老朋友也结识新朋友", cities: { hangzhou: 8, guangzhou: 7, chongqing: 8 } },
-                    { text: "更喜欢独处或小圈子交流", cities: { suzhou: 7, xian: 6, qingdao: 6 } }
-                ]
-            },
-            {
-                id: 8,
-                text: "你对美食的偏好是？",
-                options: [
-                    { text: "无辣不欢，喜欢麻辣口味", cities: { chongqing: 10, chengdu: 10, changsha: 9 } },
-                    { text: "喜欢清淡、原汁原味", cities: { guangzhou: 10, hangzhou: 8, suzhou: 8 } },
-                    { text: "面食爱好者", cities: { xian: 10, lanzhou: 9, beijing: 7 } },
-                    { text: "海鲜狂热者", cities: { qingdao: 10, xiamen: 10, dalian: 9 } },
-                    { text: "什么口味都愿意尝试", cities: { shanghai: 9, shenzhen: 8, beijing: 7 } }
-                ]
-            },
-            {
-                id: 9,
-                text: "你更倾向于哪种文化氛围？",
-                options: [
-                    { text: "传统文化与历史底蕴深厚", cities: { xian: 10, beijing: 9, luoyang: 9 } },
-                    { text: "现代、国际化、前沿", cities: { shanghai: 10, shenzhen: 10, guangzhou: 8 } },
-                    { text: "休闲、安逸、享受生活", cities: { chengdu: 10, xiamen: 9, kunming: 9 } },
-                    { text: "创业、创新、年轻活力", cities: { shenzhen: 10, hangzhou: 9, beijing: 8 } },
-                    { text: "多元融合、包容开放", cities: { shanghai: 9, guangzhou: 8, chongqing: 7 } }
-                ]
-            },
-            {
-                id: 10,
-                text: "你对未来的职业规划是？",
-                options: [
-                    { text: "在大型企业或政府机构稳步发展", cities: { beijing: 10, shanghai: 9, guangzhou: 8 } },
-                    { text: "创业或加入初创公司", cities: { shenzhen: 10, hangzhou: 9, beijing: 8 } },
-                    { text: "自由职业或远程工作", cities: { chengdu: 9, xiamen: 9, kunming: 8 } },
-                    { text: "从事文化、艺术或教育行业", cities: { beijing: 9, xian: 8, suzhou: 7 } },
-                    { text: "还没确定，希望有更多可能性", cities: { shanghai: 8, shenzhen: 8, hangzhou: 7 } }
-                ]
-            }
-        ];
+    <div id="result-screen" class="hidden">
+        <div class="result-tag" id="res-tag">匹配完成</div>
+        <div style="font-size: 1rem; color: var(--text-sub);">你灵魂深处其实是个</div>
+        <div class="city-name" id="res-city">城市</div>
+        <div class="city-desc" id="res-desc">描述</div>
+        <button class="action-btn" onclick="location.reload()">再测一次</button>
+    </div>
+</div>
 
-        // 全局变量
-        let currentQuestion = 0;
-        let userSelections = new Array(questions.length).fill(null);
-        let cityScores = {};
-        
-        // 初始化城市分数
-        function initializeCityScores() {
-            cities.forEach(city => {
-                cityScores[city.id] = 0;
-            });
+<script>
+    // 精准度提升的核心：采用多点赋权机制。每个选项会影响多个城市的得分。
+    const questions = [
+        {
+            q: "1. 假设周五晚上不用加班，你最想马上做的事情是？",
+            options: [
+                { t: "换上全妆，冲向Livehouse或最火的Bistro喝一杯", score: { Shanghai: 3, Changsha: 3, Chengdu: 1 } },
+                { t: "终于有时间去吃那家种草很久的苍蝇馆子了！", score: { Guangzhou: 3, Chongqing: 3, Chengdu: 2 } },
+                { t: "回家洗个热水澡，点个外卖，躺平刷剧", score: { Hangzhou: 2, Shenzhen: 1, Beijing: 1 } },
+                { t: "约三五好友去江边/海边/湖边吹吹风散步", score: { Xiamen: 3, Dali: 3, Hangzhou: 2 } }
+            ]
+        },
+        {
+            q: "2. 在职场或生活中遇到“卷王”，你的内心OS是：",
+            options: [
+                { t: "“要卷是吧？来啊，看谁能拿出更专业的方案。”", score: { Shenzhen: 3, Shanghai: 3, Beijing: 2 } },
+                { t: "“你卷你的，我到点下班，生活才是老子的本体。”", score: { Chengdu: 3, Guangzhou: 2, Xiamen: 2 } },
+                { t: "“挺好，跟着他也许能搞波大的，实现财富自由。”", score: { Hangzhou: 3, Shenzhen: 2, Shanghai: 1 } },
+                { t: "“随他去吧，格局打开，这都不算事儿。”", score: { Beijing: 3, XiAn: 2, Harbin: 2 } }
+            ]
+        },
+        {
+            q: "3. 你认为“有品位的生活”必须包含哪一种元素？",
+            options: [
+                { t: "咖啡馆、艺术展、懂分寸感的社交圈", score: { Shanghai: 3, Hangzhou: 2 } },
+                { t: "深厚的历史底蕴、胡同小巷里的京味/古风", score: { Beijing: 3, XiAn: 3 } },
+                { t: "热气腾腾的市井气、哪怕穿着拖鞋也能吃大餐", score: { Guangzhou: 3, Chongqing: 2, Changsha: 1 } },
+                { t: "推开窗就能看到自然风景，没有钢筋森林的压迫感", score: { Dali: 3, Xiamen: 3 } }
+            ]
+        },
+        {
+            q: "4. 如果要给自己的性格贴一个标签，你觉得哪个最准？",
+            options: [
+                { t: "直接坦荡，重情重义，不喜欢弯弯绕绕", score: { Harbin: 3, Chongqing: 3, Beijing: 2 } },
+                { t: "务实低调，闷声发大财，不爱虚荣", score: { Guangzhou: 3, Shenzhen: 2 } },
+                { t: "边界感强，契约精神，体面至上", score: { Shanghai: 3, Hangzhou: 1 } },
+                { t: "包容随性，乐观开朗，天生的享乐派", score: { Chengdu: 3, Changsha: 3, Dali: 1 } }
+            ]
+        },
+        {
+            q: "5. 买东西时，你的消费观更偏向于？",
+            options: [
+                { t: "为情绪价值和最新科技买单，贵点无所谓", score: { Hangzhou: 3, Shenzhen: 2, Shanghai: 2 } },
+                { t: "极其注重性价比，好吃/好用才是硬道理", score: { Guangzhou: 3, Chengdu: 2 } },
+                { t: "千金难买我乐意，看心情，为爱好疯狂氪金", score: { Changsha: 3, Chongqing: 2, Beijing: 1 } },
+                { t: "极简主义，物质欲不高，够用就行", score: { Dali: 3, Xiamen: 2, XiAn: 1 } }
+            ]
+        },
+        {
+            q: "6. 当你感到非常焦虑和内耗时，哪种场景最能治愈你？",
+            options: [
+                { t: "看卡里余额上涨，或者搞定一个大项目", score: { Shenzhen: 4, Shanghai: 2, Hangzhou: 2 } },
+                { t: "凌晨的烧烤摊，和朋友痛饮吐槽", score: { Harbin: 3, Changsha: 3, Chongqing: 3 } },
+                { t: "一个人去看海，或者去山里发个呆", score: { Xiamen: 4, Dali: 3 } },
+                { t: "逛菜市场，看着琳琅满目的食材", score: { Guangzhou: 3, Chengdu: 3 } }
+            ]
         }
+    ];
+
+    const results = {
+        Shanghai: { name: "上海", tag: "体面与边界的守卫者", desc: "你是典型的“高能低耗”人格。你极度热爱秩序感、边界感和契约精神。在你的世界里，生活品质和专业主义是不可妥协的底线，比起毫无边界的热情，你更喜欢梧桐树下那份恰到好处的体面与距离。" },
+        Beijing: { name: "北京", tag: "宏观叙事下的野草", desc: "你身上有一种“混不吝”的坦荡和豁达的英雄主义。你格局宏大，不拘小节，既能在高压下谈笑风生，也能在胡同里找寻烟火。你的灵魂是硬核的，包容万象，不屑于无聊的攀比。" },
+        Guangzhou: { name: "广州", tag: "闷声发大财的务实派", desc: "你深谙“低调才是最高级的炫耀”。你拒绝精神内耗，活得极其清醒且务实。对你来说，穿拖鞋吃米其林是常态，比起光鲜亮丽的PPT，你更关心今晚的靓汤炖得够不够火候。" },
+        Shenzhen: { name: "深圳", tag: "不知疲倦的齿轮", desc: "你天生带着“搞钱”和“效率”的DNA。你极具执行力，拥抱变化，慕强且慕理。你相信规则和努力的力量，比起缅怀过去，你永远在向往下一个风口。搞钱，才是治愈一切矫情的良药。" },
+        Chengdu: { name: "成都", tag: "反内卷先锋", desc: "你彻底掌握了人生的终极奥义——“松弛感”。在大家都在焦虑狂奔的时候，你总能精准找到最舒服的那个躺椅。你包容、乐观，能用一顿火锅化解所有不快，生活本身才是你最在乎的作品。" },
+        Chongqing: { name: "重庆", tag: "赛博朋克的耿直魂", desc: "你的灵魂是立体的、魔幻的、热烈且直白的！你爱憎分明，性子极野，有着江湖儿女的仗义。你不喜欢弯弯绕绕，有什么事当面锣对面鼓地说清楚。你生命力极强，像这座城市的火锅一样热辣滚烫。" },
+        Changsha: { name: "长沙", tag: "永不夜的弄潮儿", desc: "你是一个充满能量的“多巴胺”发电机！你害怕平庸和寂静，消费观前卫，享受当下。哪里有热闹、美食和潮流，哪里就是你的主场。对你来说，人生苦短，必须性感，快乐要趁早。" },
+        Hangzhou: { name: "杭州", tag: "科技与浪漫的平衡者", desc: "你是理性与感性的完美结合。你既渴望在互联网的浪潮中证明自己，又保留了一份文人的儒雅和对生活品质的追求。你是个进阶的长期主义者，能在效率与诗意之间找到微妙的平衡。" },
+        Xiamen: { name: "厦门", tag: "文艺浪漫的岛屿", desc: "你的灵魂里藏着一片海。你厌恶快节奏的压迫，向往温柔、缓慢、浪漫的生活步调。你敏感且富有同理心，极简且文艺。比起在内卷中厮杀，你更愿意在海风中找寻内心的平静。" },
+        XiAn: { name: "西安", tag: "厚重深沉的时光客", desc: "你是个极其有“故事感”和底蕴的人。你沉稳、厚重，不随波逐流，对历史和文化有着天然的亲近感。你的性格如同城墙般坚固，有着强大的内核和文化自信。" },
+        Dali: { name: "大理", tag: "精神离职的艺术家", desc: "你是一个彻底的“自由主义者”。你对世俗的成功标准嗤之以鼻，只在乎内心的感受。你可能一直处于“精神离职”的状态，风花雪月、自然山水才是你灵魂真正的充电站。" },
+        Harbin: { name: "哈尔滨", tag: "冰雪里的热血沸腾", desc: "你有着冰冷的铠甲和极其火热的内心。你真诚、直接、大气，是交朋友的绝佳人选。你不懂什么是虚情假意，认准了谁就会掏心掏肺。你的直爽是这座城市最迷人的风雪。" }
+    };
+
+    let currentStep = 0;
+    let totalScores = {};
+
+    document.getElementById('step-total').innerText = questions.length;
+
+    function startTest() {
+        document.getElementById('start-screen').classList.add('hidden');
+        document.getElementById('quiz-screen').classList.remove('hidden');
+        document.getElementById('quiz-screen').classList.add('fade-in');
+        showQuestion();
+    }
+
+    function showQuestion() {
+        // 重置动画
+        const quizScreen = document.getElementById('quiz-screen');
+        quizScreen.style.animation = 'none';
+        quizScreen.offsetHeight; // 触发回流
+        quizScreen.style.animation = null;
+
+        const qData = questions[currentStep];
+        document.getElementById('question-text').innerText = qData.q;
+        document.getElementById('step-current').innerText = currentStep + 1;
         
-        // 开始测试
-        document.getElementById('start-btn').addEventListener('click', function() {
-            document.querySelector('.start-container').style.display = 'none';
-            document.getElementById('progress-container').style.display = 'block';
-            document.getElementById('progress-text').style.display = 'block';
-            
-            initializeCityScores();
-            showQuestion(currentQuestion);
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        
+        qData.options.forEach((opt, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt.t;
+            // 简单的防连点逻辑
+            btn.onclick = function() {
+                this.style.transform = "scale(0.98)";
+                setTimeout(() => handleAnswer(opt.score), 150);
+            };
+            container.appendChild(btn);
         });
-        
-        // 显示问题
-        function showQuestion(index) {
-            const testContainer = document.getElementById('test-container');
-            const question = questions[index];
-            
-            let optionsHTML = '';
-            question.options.forEach((option, optIndex) => {
-                const isSelected = userSelections[index] === optIndex;
-                optionsHTML += `
-                    <div class="option ${isSelected ? 'selected' : ''}" data-index="${optIndex}">
-                        <i class="fas fa-${getOptionIcon(optIndex)} option-icon"></i>
-                        <span class="option-text">${option.text}</span>
-                    </div>
-                `;
-            });
-            
-            const questionHTML = `
-                <div class="question-card ${index === currentQuestion ? 'active' : ''}">
-                    <h2 class="question-title">
-                        <span class="question-number">${question.id}</span>
-                        ${question.text}
-                    </h2>
-                    <div class="options-container">
-                        ${optionsHTML}
-                    </div>
-                    <div class="navigation">
-                        <button class="btn btn-prev" id="prev-btn" ${index === 0 ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>
-                            <i class="fas fa-arrow-left"></i> 上一题
-                        </button>
-                        ${index === questions.length - 1 
-                            ? '<button class="btn btn-submit" id="submit-btn">查看结果 <i class="fas fa-flag-checkered"></i></button>' 
-                            : '<button class="btn btn-next" id="next-btn">下一题 <i class="fas fa-arrow-right"></i></button>'}
-                    </div>
-                </div>
-            `;
-            
-            testContainer.innerHTML = questionHTML;
-            
-            // 更新进度条
-            updateProgressBar(index);
-            
-            // 添加选项选择事件
-            document.querySelectorAll('.option').forEach(option => {
-                option.addEventListener('click', function() {
-                    const selectedIndex = parseInt(this.getAttribute('data-index'));
-                    selectOption(index, selectedIndex);
-                });
-            });
-            
-            // 添加上一题/下一题事件
-            if (index > 0) {
-                document.getElementById('prev-btn').addEventListener('click', function() {
-                    if (currentQuestion > 0) {
-                        currentQuestion--;
-                        showQuestion(currentQuestion);
-                    }
-                });
-            }
-            
-            if (index < questions.length - 1) {
-                document.getElementById('next-btn').addEventListener('click', function() {
-                    if (userSelections[currentQuestion] !== null) {
-                        currentQuestion++;
-                        showQuestion(currentQuestion);
-                    } else {
-                        alert('请先选择答案再继续！');
-                    }
-                });
-            } else {
-                document.getElementById('submit-btn').addEventListener('click', function() {
-                    if (userSelections[currentQuestion] !== null) {
-                        calculateResult();
-                    } else {
-                        alert('请先选择答案再查看结果！');
-                    }
-                });
+
+        const progress = ((currentStep) / questions.length) * 100;
+        document.getElementById('progress-inner').style.width = progress + '%';
+    }
+
+    function handleAnswer(scoreObj) {
+        // 核心统分逻辑：遍历该选项赋分的城市，累加到总分表
+        for (let city in scoreObj) {
+            totalScores[city] = (totalScores[city] || 0) + scoreObj[city];
+        }
+
+        currentStep++;
+        if (currentStep < questions.length) {
+            showQuestion();
+        } else {
+            // 填满进度条后再跳转
+            document.getElementById('progress-inner').style.width = '100%';
+            setTimeout(showResult, 400);
+        }
+    }
+
+    function showResult() {
+        document.getElementById('quiz-screen').classList.add('hidden');
+        const resultScreen = document.getElementById('result-screen');
+        resultScreen.classList.remove('hidden');
+        resultScreen.classList.add('fade-in');
+
+        // 核心匹配逻辑：找出得分最高的城市
+        let topCityKey = null;
+        let maxScore = -1;
+
+        for (let city in totalScores) {
+            if (totalScores[city] > maxScore) {
+                maxScore = totalScores[city];
+                topCityKey = city;
             }
         }
         
-        // 获取选项图标
-        function getOptionIcon(index) {
-            const icons = ['circle', 'star', 'heart', 'sun', 'moon', 'cloud', 'leaf', 'fire', 'water', 'gem'];
-            return icons[index % icons.length];
-        }
+        // 保底逻辑（防止出现全是0的情况）
+        if (!topCityKey) topCityKey = "Chengdu"; 
+
+        const finalCity = results[topCityKey];
         
-        // 选择选项
-        function selectOption(questionIndex, optionIndex) {
-            userSelections[questionIndex] = optionIndex;
-            
-            // 更新UI
-            document.querySelectorAll('.option').forEach(option => {
-                option.classList.remove('selected');
-            });
-            document.querySelector(`.option[data-index="${optionIndex}"]`).classList.add('selected');
-        }
-        
-        // 更新进度条
-        function updateProgressBar(index) {
-            const progress = ((index + 1) / questions.length) * 100;
-            document.getElementById('progress-bar').style.width = `${progress}%`;
-            document.getElementById('progress-text').textContent = `第${index + 1}题 / 共${questions.length}题`;
-        }
-        
-        // 计算结果
-        function calculateResult() {
-            // 重置分数
-            initializeCityScores();
-            
-            // 计算每个城市的分数
-            userSelections.forEach((selection, questionIndex) => {
-                if (selection !== null) {
-                    const selectedOption = questions[questionIndex].options[selection];
-                    Object.entries(selectedOption.cities).forEach(([cityId, score]) => {
-                        cityScores[cityId] += score;
-                    });
-                }
-            });
-            
-            // 转换为数组并排序
-            const cityResults = cities.map(city => {
-                return {
-                    ...city,
-                    score: cityScores[city.id] || 0
-                };
-            }).sort((a, b) => b.score - a.score);
-            
-            // 显示结果
-            showResult(cityResults);
-        }
-        
-        // 显示结果
-        function showResult(cityResults) {
-            const topCity = cityResults[0];
-            const otherCities = cityResults.slice(1, 5);
-            
-            // 生成匹配度百分比 (基于最高分与可能最高分的比例)
-            const maxPossibleScore = questions.length * 10;
-            const matchPercentage = Math.round((topCity.score / maxPossibleScore) * 100);
-            
-            // 生成城市标签HTML
-            const tagsHTML = topCity.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
-            
-            // 生成其他城市HTML
-            let otherCitiesHTML = '';
-            otherCities.forEach(city => {
-                const cityPercentage = Math.round((city.score / maxPossibleScore) * 100);
-                otherCitiesHTML += `
-                    <div class="other-city">
-                        <h4>${city.name}</h4>
-                        <p class="other-city-score">匹配度: ${cityPercentage}%</p>
-                        <p>${city.description.substring(0, 80)}...</p>
-                    </div>
-                `;
-            });
-            
-            const resultHTML = `
-                <div class="result-header">
-                    <h2 class="result-title">你的性格匹配城市是：</h2>
-                    <div class="matched-city">${topCity.name}</div>
-                    <p class="match-score">匹配度: ${matchPercentage}%</p>
-                </div>
-                
-                <div class="city-card">
-                    <div class="city-image" style="background-color: ${topCity.imageColor}; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: bold;">
-                        ${topCity.name}市
-                    </div>
-                    <div class="city-details">
-                        <h3>${topCity.name}</h3>
-                        <div class="city-tags">
-                            ${tagsHTML}
-                        </div>
-                        <p class="city-description">${topCity.description}</p>
-                    </div>
-                </div>
-                
-                <h3 style="text-align: left; margin-top: 40px; color: #2c3e50;">其他可能适合你的城市：</h3>
-                <div class="other-cities">
-                    ${otherCitiesHTML}
-                </div>
-                
-                <div style="margin-top: 40px;">
-                    <button class="btn btn-restart" id="restart-btn">
-                        <i class="fas fa-redo"></i> 重新测试
-                    </button>
-                    <button class="btn" id="share-btn" style="background: #3498db; color: white; margin-left: 15px;">
-                        <i class="fas fa-share-alt"></i> 分享结果
-                    </button>
-                </div>
-            `;
-            
-            document.getElementById('test-container').style.display = 'none';
-            document.getElementById('progress-container').style.display = 'none';
-            document.getElementById('progress-text').style.display = 'none';
-            document.getElementById('result-container').innerHTML = resultHTML;
-            document.getElementById('result-container').style.display = 'block';
-            
-            // 添加重新测试按钮事件
-            document.getElementById('restart-btn').addEventListener('click', function() {
-                currentQuestion = 0;
-                userSelections.fill(null);
-                initializeCityScores();
-                
-                document.getElementById('result-container').style.display = 'none';
-                document.getElementById('test-container').style.display = 'block';
-                document.getElementById('progress-container').style.display = 'block';
-                document.getElementById('progress-text').style.display = 'block';
-                
-                showQuestion(currentQuestion);
-            });
-            
-            // 添加分享按钮事件
-            document.getElementById('share-btn').addEventListener('click', function() {
-                const shareText = `我的城市性格匹配测试结果：最适合我的城市是${topCity.name}，匹配度${matchPercentage}%！你也来测试一下吧！`;
-                if (navigator.share) {
-                    navigator.share({
-                        title: '城市性格匹配测试结果',
-                        text: shareText,
-                        url: window.location.href
-                    });
-                } else {
-                    // 如果不支持Web Share API，则复制到剪贴板
-                    navigator.clipboard.writeText(shareText + ' ' + window.location.href)
-                        .then(() => alert('结果已复制到剪贴板，可以分享给朋友了！'))
-                        .catch(err => console.error('复制失败: ', err));
-                }
-            });
-        }
-        
-        // 初始化
-        initializeCityScores();
-    </script>
+        document.getElementById('res-tag').innerText = "✨ " + finalCity.tag;
+        document.getElementById('res-city').innerText = finalCity.name;
+        document.getElementById('res-desc').innerText = finalCity.desc;
+    }
+</script>
+
 </body>
 </html>
